@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<form>
+	
+	<fieldset addfieldpath="/administrator/components/com_donorwiz/models/fields/">
+
+		<field 
+			name="id" 
+			type="text" 
+			default="0" 
+			label="COM_DW_OPPORTUNITIES_RESPONSES_FORM_LBL_RESPONSE_ID"
+            readonly="true" 
+			class="readonly"
+            description="JGLOBAL_FIELD_ID_DESC" 
+		/> 
+
+		<field 
+			name="created_by" 
+			type="createdby" 
+			default=""
+            label="COM_DW_OPPORTUNITIES_RESPONSES_FORM_LBL_RESPONSE_CREATED_BY"
+            description="COM_DW_OPPORTUNITIES_RESPONSES_FORM_DESC_RESPONSE_CREATED_BY"  
+		/> 
+
+		<field 
+			name="created" 
+			type="timecreated" 
+			default="" 
+            label="COM_DW_OPPORTUNITIES_RESPONSES_FORM_LBL_RESPONSE_CREATED"
+            description="COM_DW_OPPORTUNITIES_RESPONSES_FORM_DESC_RESPONSE_CREATED"  
+		/> 
+
+		<field 
+			name="status" 
+			type="list"
+            label="COM_DW_OPPORTUNITIES_RESPONSES_FORM_LBL_RESPONSE_STATUS"
+            description="COM_DW_OPPORTUNITIES_RESPONSES_FORM_DESC_RESPONSE_STATUS" 
+            default="COM_VOLUNTEERS_PENDING"     
+            multiple="false"
+            option_on="Yes"
+            option_off="Yes">
+
+            <option value="COM_VOLUNTEERS_PENDING">COM_VOLUNTEERS_PENDING</option>
+            <option value="COM_VOLUNTEERS_ACCEPTED">COM_VOLUNTEERS_ACCEPTED</option>
+            <option value="COM_VOLUNTEERS_DECLINED">COM_VOLUNTEERS_DECLINED</option>
+        
+		</field> 
+
+		<field 
+			
+			name="filter_status" 
+			type="list" 
+			onchange="this.form.submit();">
+			<option value="">COM_DW_OPPORTUNITIES_RESPONSES_RESPONSES_STATUS_FILTER</option>
+			<option value="COM_VOLUNTEERS_PENDING">COM_VOLUNTEERS_PENDING</option>
+			<option value="COM_VOLUNTEERS_ACCEPTED">COM_VOLUNTEERS_ACCEPTED</option>
+			<option value="COM_VOLUNTEERS_DECLINED">COM_VOLUNTEERS_DECLINED</option>
+		
+		</field> 
+
+		<field 
+			
+			name="opportunity_id" 
+			type="text" 
+			size="40" 
+			class="inputbox"
+            label="COM_DW_OPPORTUNITIES_RESPONSES_FORM_LBL_RESPONSE_OPPORTUNITY_ID"
+            description="COM_DW_OPPORTUNITIES_RESPONSES_FORM_DESC_RESPONSE_OPPORTUNITY_ID" 
+			default="0"
+		/> 
+
+		<field 
+			
+			name="message" 
+			type="textarea"
+            label="COM_DW_OPPORTUNITIES_RESPONSES_FORM_LBL_RESPONSE_MESSAGE"
+            description="COM_DW_OPPORTUNITIES_RESPONSES_FORM_DESC_RESPONSE_MESSAGE"    
+            cols="100"
+            rows="8"
+			class="uk-width-1-1"
+			required="true"
+			hint="COM_DW_OPPORTUNITIES_RESPONSES_WIZARD_DESCR" 
+			autofocus="true" 
+			onchange="var text = ( jQuery( jQuery( this ).val()).length ) ? jQuery( jQuery( this ).val()).text() : jQuery( this ).val() ;jQuery( this ).val( jQuery.trim( text ) );" 
+
+		/> 
+
+		<field
+			
+			name="state"
+			type="list"
+			label="JSTATUS"
+			description="JFIELD_PUBLISHED_DESC"
+			class="inputbox"
+			size="1"
+			default="1">
+			
+			<option value="1">JPUBLISHED</option>
+			<option value="0">JUNPUBLISHED</option>
+			<option value="2">JARCHIVED</option>
+			<option value="-2">JTRASHED</option>
+		</field>
+
+		<field name="checked_out" type="hidden" filter="unset" />
+        <field name="checked_out_time" type="hidden" filter="unset" /> 
+
+</fieldset> 
+
+	<fieldset name="accesscontrol">
+	
+		<field name="asset_id" type="hidden" filter="unset" />
+		
+		<field 
+			name="rules"
+			type="rules"
+			label="JFIELD_RULES_LABEL"
+			translate_label="false"
+			filter="rules"
+			validate="rules"
+			class="inputbox"
+			component="com_volunteers_responses"
+			section="response"
+		/>
+
+	</fieldset>
+	
+	<fields name="parameters" label="COM_DW_OPPORTUNITIES_RESPONSES_PARAMETERS">
+
+		<field name="telephone" 
+			
+			type="tel"
+            label="COM_VOLUNTEERS_RESPONSE_WIZARD_LABEL_TELEPHONE"
+            maxlength="10"
+            hint="COM_VOLUNTEERS_RESPONSE_WIZARD_HINT_TELEPHONE"
+			default=""
+			required="true"
+        />
+		
+		<!--
+		<field name="agree" 
+			
+			type="checkbox"
+            label="COM_VOLUNTEERS_RESPONSE_WIZARD_LABEL_AGREE_TO_TOS"
+			default=""
+			required="true"
+        />
+		-->
+		
+
+		
+	</fields>
+
+</form>

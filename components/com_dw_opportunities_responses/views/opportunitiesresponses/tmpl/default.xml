@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<layout title="COM_DW_OPPORTUNITIES_RESPONSES_TITLE_LIST_VIEW_OPPORTUNITIESRESPONSES" option="View">
+        <message>
+                        <![CDATA[COM_DW_OPPORTUNITIES_RESPONSES_TITLE_LIST_VIEW_OPPORTUNITIESRESPONSES_DESC]]>
+        </message>
+	</layout>
+</metadata>

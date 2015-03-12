@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" version="3.0" method="upgrade">
+    <name>com_dw_opportunities_responses</name>
+    <creationDate>2015-03-02</creationDate>
+    <copyright>Copyright (C) 2014. All rights reserved.</copyright>
+    <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+    <author>Charalampos Kaklamanos</author>
+    <authorEmail>dev.yesinternet@gmail.com</authorEmail>
+    <authorUrl>http://www.yesinternet.gr</authorUrl>
+    <version>1.0.1</version>
+    <description></description>
+    
+    <scriptfile>script.php</scriptfile>
+    
+    <install> <!-- Runs on install -->
+        <sql>
+            <file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+        </sql>
+    </install>
+    <uninstall> <!-- Runs on uninstall -->
+        <sql>
+            <file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
+        </sql>
+    </uninstall>
+
+    <files folder="site">
+        <filename>index.html</filename>
+        <filename>dw_opportunities_responses.php</filename>
+        <filename>controller.php</filename>
+        <filename>router.php</filename>
+        <folder>views</folder>
+        <folder>models</folder>
+        <folder>controllers</folder>
+        <folder>helpers</folder>
+        <folder>assets</folder>
+    </files>
+    <languages folder="languages/site">
+        
+			<language tag="en-GB">en-GB/en-GB.com_dw_opportunities_responses.ini</language>
+    </languages>
+    <administration>
+        <menu img="components/com_dw_opportunities_responses/assets/images/s_com_dw_opportunities_responses.png" >COM_DW_OPPORTUNITIES_RESPONSES</menu>
+        <submenu>
+            
+			<menu link="option=com_dw_opportunities_responses&amp;view=opportunitiesresponses" view="opportunitiesresponses" img="components/com_dw_opportunities_responses/assets/images/s_opportunitiesresponses.png" alt="Dw_opportunities_responses/Opportunitiesresponses">COM_DW_OPPORTUNITIES_RESPONSES_TITLE_OPPORTUNITIESRESPONSES</menu>
+
+        </submenu>
+        <files folder="administrator">
+            <filename>access.xml</filename>
+            <filename>config.xml</filename>
+            <filename>controller.php</filename>
+            <filename>index.html</filename>
+            <filename>dw_opportunities_responses.php</filename>
+            <folder>controllers</folder>
+            <folder>assets</folder>
+            <folder>helpers</folder>
+            <folder>models</folder>
+            <folder>sql</folder>
+            <folder>tables</folder>
+            <folder>views</folder>
+        </files>
+        <languages folder="languages/administrator">
+            
+			<language tag="en-GB">en-GB/en-GB.com_dw_opportunities_responses.ini</language>
+			<language tag="en-GB">en-GB/en-GB.com_dw_opportunities_responses.sys.ini</language>
+        </languages>
+    </administration>
+    <plugins>
+        <plugin group="search" plugin="dw_opportunities_responses"/>
+    </plugins>
+    
+</extension>
+<!-- Component built by the Joomla Component Creator -->
+<!-- http://www.component-creator.com/ -->

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fieldset>
+
+              <field name="id" type="text" default="0" label="COM_DW_OPPORTUNITIES_RESPONSES_FORM_LBL_OPPORTUNITYRESPONSE_ID"
+            readonly="true" class="readonly"
+            description="JGLOBAL_FIELD_ID_DESC" /> 
+
+       <field name="created_by" type="createdby" default="" 
+            label="COM_DW_OPPORTUNITIES_RESPONSES_FORM_LBL_OPPORTUNITYRESPONSE_CREATED_BY"
+            description="COM_DW_OPPORTUNITIES_RESPONSES_FORM_DESC_OPPORTUNITYRESPONSE_CREATED_BY"  /> 
+
+ 
+		<field name="filter_created_by" type="user" onchange="this.form.submit();" /> 
+
+       <field name="created" type="timecreated" default="" 
+            label="COM_DW_OPPORTUNITIES_RESPONSES_FORM_LBL_OPPORTUNITYRESPONSE_CREATED"
+            description="COM_DW_OPPORTUNITIES_RESPONSES_FORM_DESC_OPPORTUNITYRESPONSE_CREATED"  /> 
+
+       <field name="modified_by" type="createdby" default="" 
+            label="COM_DW_OPPORTUNITIES_RESPONSES_FORM_LBL_OPPORTUNITYRESPONSE_MODIFIED_BY"
+            description="COM_DW_OPPORTUNITIES_RESPONSES_FORM_DESC_OPPORTUNITYRESPONSE_MODIFIED_BY"  /> 
+
+       <field name="modified" type="timeupdated" default="" 
+            label="COM_DW_OPPORTUNITIES_RESPONSES_FORM_LBL_OPPORTUNITYRESPONSE_MODIFIED"
+            description="COM_DW_OPPORTUNITIES_RESPONSES_FORM_DESC_OPPORTUNITYRESPONSE_MODIFIED"  /> 
+
+       <field name="opportunity_id" type="text" size="40" class="inputbox"
+                                                    
+            label="COM_DW_OPPORTUNITIES_RESPONSES_FORM_LBL_OPPORTUNITYRESPONSE_OPPORTUNITY_ID"
+            description="COM_DW_OPPORTUNITIES_RESPONSES_FORM_DESC_OPPORTUNITYRESPONSE_OPPORTUNITY_ID" 
+                                                     default="0" 
+                                                    
+                                                    
+                                                    filter="safehtml" /> 
+
+       <field name="message" type="textarea"
+                
+            label="COM_DW_OPPORTUNITIES_RESPONSES_FORM_LBL_OPPORTUNITYRESPONSE_MESSAGE"
+            description="COM_DW_OPPORTUNITIES_RESPONSES_FORM_DESC_OPPORTUNITYRESPONSE_MESSAGE" 
+                
+                
+                
+            menu_published="0"
+            cols="100"
+            rows="8"
+            filter="safehtml"
+            option_on="Yes"
+            option_off="Yes" /> 
+
+       <field name="parameters" type="textarea"
+                
+            label="COM_DW_OPPORTUNITIES_RESPONSES_FORM_LBL_OPPORTUNITYRESPONSE_PARAMETERS"
+            description="COM_DW_OPPORTUNITIES_RESPONSES_FORM_DESC_OPPORTUNITYRESPONSE_PARAMETERS" 
+                
+                
+                
+            cols="100"
+            rows="8"
+            option_on="Yes"
+            option_off="Yes" /> 
+
+         <field
+        name="state"
+        type="list"
+        label="JSTATUS"
+        description="JFIELD_PUBLISHED_DESC"
+        class="inputbox"
+        size="1"
+        default="1">
+        <option value="1">JPUBLISHED</option>
+        <option value="0">JUNPUBLISHED</option>
+        <option value="2">JARCHIVED</option>
+        <option value="-2">JTRASHED</option>
+    </field> 
+
+                        <field name="checked_out" type="hidden" filter="unset" />
+        <field name="checked_out_time" type="hidden" filter="unset" />
+
+	</fieldset>
+
+</form>
