@@ -11,8 +11,19 @@ include_once JPATH_ROOT.'/components/com_community/libraries/messaging.php';
 
 $response = $displayData['response'];
 
-
 $response -> status = ( !$response -> status || ( $response -> status_state=='-1' || $response -> status_state=='-2' ) ) ? 'pending' : $response -> status ;
+
+// JModelLegacy::addIncludePath(JPATH_SITE . '/components/com_dw_opportunities/models', 'Dw_opportunitiesModel');
+// $opportunityModel = JModelLegacy::getInstance('DwOpportunity', 'Dw_opportunitiesModel', array('ignore_request' => true));	
+// $opportunity = $opportunityModel -> getData( $response -> opportunity_id );	
+
+//Get opportunity from user state
+$opportunity = JFactory::getApplication()->getUserState('com_dw_opportunities.opportunity.id'.$response -> opportunity_id);	
+//Save response to user state
+JFactory::getApplication()->setUserState('com_dw_opportunities.opportunity_response.id'.$response->id , $response);	
+
+
+$response -> status_created_by = ( !$response -> status_created_by ) ? $opportunity ->created_by : $response -> status_created_by ;
 
 //Check if logged in user is the owner of the response
 $user = JFactory::getUser();
@@ -26,6 +37,8 @@ if (!$canEdit && $user->authorise('core.edit.own', 'com_dw_opportunities_respons
 $canEditStatus = $user->authorise('core.edit', 'com_dw_opportunities_responses_statuses');
 if (!$canEditStatus && $user->authorise('core.edit.own', 'com_dw_opportunities_responses_statuses'))
 	$canEditStatus = $user->id == $response->status_created_by;
+
+
 
 //Create response user object
 $cuser = CFactory::getUser( $response->created_by );
@@ -132,6 +145,7 @@ $cuser = CFactory::getUser( $response->created_by );
 			
 			
 				<?php if ($canEditStatus) :?>
+				
 					<?php echo JLayoutHelper::render(
 						'popup-button', 
 						array (

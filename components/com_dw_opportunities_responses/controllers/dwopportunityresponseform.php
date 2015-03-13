@@ -106,40 +106,12 @@ class Dw_opportunities_responsesControllerDwOpportunityresponseForm extends Dw_o
         // Flush the data from the session.
         $app->setUserState('com_dw_opportunities_responses.edit.opportunityresponse.data', null);
 		
-		
-		//Notify opportunity creator via messaging system ---------------------------------------------------------------------
-		JModelLegacy::addIncludePath(JPATH_SITE . '/components/com_dw_opportunities/models', 'Dw_opportunitiesModel');
-		$opportunityModel = JModelLegacy::getInstance('DwOpportunity', 'Dw_opportunitiesModel', array('ignore_request' => true));	
-		$opportunity = $opportunityModel -> getData( $data['opportunity_id']);
-		
-		$donorwizMessaging = new DonorwizMessaging();
-		
-		$messageParams = array();
-		$messageParams['actor_id'] = CFactory::getUser() -> id;
-		$messageParams['target'] = $opportunity -> created_by;
-		$messageParams['opportunity_title'] = $opportunity -> title;
-		$messageParams['link'] = JRoute::_('index.php?option=com_donorwiz&view=dashboard&layout=dwopportunity&Itemid=298&id='.$opportunity -> id).'#opportunityresponse'.$data['id'];
-		$messageParams['subject'] = $opportunity->title.': '.JText::_('COM_DW_OPPORTUNITIES_RESPONSES_NEW_RESPONSE_NOTIFICATION_SUBJECT');
-		$messageParams['body'] = JText::_('COM_DW_OPPORTUNITIES_RESPONSES_NEW_RESPONSE_NOTIFICATION_BODY');
-		
-		$donorwizMessaging -> sendNotification ( $messageParams ) ;
-		//----------------------------------------------------------------------------------------------------------------------------------
-		
-		//Add donor to the ngo friends list
-		
-		// $user = JFactory::getUser();
-		
-		// $opportunityitemSession = $app->getUserState('com_dw_opportunities.dwopportunity.session');
-		
-		// $id = $opportunityitemSession -> created_by ;
-		// $fromid = $user -> id ; 
-		
-		// if($id!=$fromid){
-			// $donorwizCommunity = new DonorwizCommunity();
-			// $addAsAFriend = $donorwizCommunity -> addAsAFriend( $id , $fromid , '' , 1 );
-		// }
-		
-		
+	
+		//Notify Beneficiary about the new response  ----------------------------------------------------------------------------------------------------
+		JPluginHelper::importPlugin('donorwiz');
+		$dispatcher	= JEventDispatcher::getInstance();
+		$dispatcher->trigger( 'onOpportunityResponseUpdate' , array( &$data ) );
+
 		try
 		{
 			echo new JResponseJson( $return );
