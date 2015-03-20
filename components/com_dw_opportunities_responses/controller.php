@@ -24,7 +24,7 @@ class Dw_opportunities_responsesController extends JControllerLegacy {
      * @since	1.5
      */
     public function display($cachable = false, $urlparams = false) {
-        require_once JPATH_SITE . '/components/dw_opportunities_responses/helpers/dw_opportunities_responses.php';
+        require_once JPATH_SITE . '/components/com_dw_opportunities_responses/helpers/dw_opportunities_responses.php';
 
         $view = JFactory::getApplication()->input->getCmd('view', '');
         JFactory::getApplication()->input->set('view', $view);
