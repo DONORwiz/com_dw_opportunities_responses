@@ -71,13 +71,8 @@ class Dw_opportunities_responsesModelDwOpportunityresponseForm extends JModelFor
                 
                 $user = JFactory::getUser();
                 $id = $table->id;
-                if($id){
-						$canEdit = $user->authorise('core.edit', 'com_dw_opportunities_responses.response.'.$id) || $user->authorise('core.create', 'com_dw_opportunities_responses.response.'.$id);
-					}
-					else{
-						$canEdit = $user->authorise('core.edit', 'com_dw_opportunities_responses') || $user->authorise('core.create', 'com_dw_opportunities_responses');
-					}
-                if (!$canEdit && $user->authorise('core.edit.own', 'com_dw_opportunities_responses.response.'.$id)) {
+                $canEdit = $user->authorise('core.edit', 'com_dw_opportunities_responses') || $user->authorise('core.create', 'com_dw_opportunities_responses');
+                if (!$canEdit && $user->authorise('core.edit.own', 'com_dw_opportunities_responses')) {
                     $canEdit = $user->id == $table->created_by;
                 }
 
