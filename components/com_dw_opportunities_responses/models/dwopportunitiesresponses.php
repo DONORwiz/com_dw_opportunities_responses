@@ -63,7 +63,7 @@ class Dw_opportunities_responsesModelDwOpportunitiesresponses extends JModelList
 
         $limitstart = $app->input->getInt('limitstart', 0);
         $this->setState('list.start', $limitstart);
-
+		
         if ($list = $app->getUserStateFromRequest($this->context . '.list', 'list', array(), 'array'))
         {
             foreach ($list as $name => $value)
@@ -128,16 +128,17 @@ class Dw_opportunities_responsesModelDwOpportunitiesresponses extends JModelList
                 $this->setState('list.' . $name, $value);
             }
         }
-
+		
         // Receive & set filters
-        if ($filters = $app->getUserStateFromRequest($this->context . '.filter', 'filter', array(), 'array'))
+		
+		if ($filters = $app->getUserStateFromRequest($this->context . '.filter', 'filter', array(), 'array'))
         {
-            foreach ($filters as $name => $value)
+            foreach ($app->getUserStateFromRequest($this->context . '.filter', 'filter', array(), 'array') as $name => $value)
             {
                 $this->setState('filter.' . $name, $value);
             }
         }
-
+		
         $this->setState('list.ordering', $app->input->get('filter_order'));
         $this->setState('list.direction', $app->input->get('filter_order_Dir'));
     }
@@ -173,6 +174,21 @@ class Dw_opportunities_responsesModelDwOpportunitiesresponses extends JModelList
     
 		// Join over the created by field 'created_by'
 		$query->join('LEFT', '#__users AS created_by ON created_by.id = a.created_by');
+
+
+		//Filtering opportunity_created_by
+		$filter_opportunity_created_by = $this->state->get("filter.opportunity_created_by");
+		
+		if ($filter_opportunity_created_by) {
+			
+			$query->select('opportunities.created_by AS opportunity_created_by');
+			$query->select('opportunities.title AS opportunity_title');
+			$query->select('opportunities.created AS opportunity_created');
+			$query->join('INNER', '#__dw_opportunities AS opportunities ON opportunities.id = a.opportunity_id');
+			
+			$query->where('opportunities.created_by ="'.$filter_opportunity_created_by.'"');
+		}
+
 		
 		// Join over the response statuses
 		$query->select('statuses.id AS status_id');
@@ -180,10 +196,10 @@ class Dw_opportunities_responsesModelDwOpportunitiesresponses extends JModelList
 		$query->select('statuses.state AS status_state');
 		$query->select('statuses.created_by AS status_created_by');
 		$query->join('LEFT', '#__dw_opportunities_responses_statuses AS statuses ON statuses.response_id=a.id');
-		
+
 		$query->where('a.state IN ( 0 , 1 )');
 
-        // Filter by search in title
+        // Filter by search in message,name etc
         $search = $this->getState('filter.search');
         if (!empty($search))
         {
@@ -195,11 +211,38 @@ class Dw_opportunities_responsesModelDwOpportunitiesresponses extends JModelList
             {
                 $search = $db->Quote('%' . $db->escape($search, true) . '%');
                 
+				
+				$_where = array();
+				$_where[] = 'a.message LIKE ' . $search;
+				
+				//$_where[] = 'status LIKE ' . $search;
+				
+				//if ($filter_opportunity_created_by) {
+					//$_where[] = 'opportunities.title LIKE ' . $search;
+				//}
+
+				$where = '(' . implode(') OR (', $_where) . ')';
+				$query->where($where);
+				
             }
         }
+		
+		
 
         
-
+		//Filtering status
+		
+		$filter_status = $this->state->get("filter.status");
+		if ($filter_status) 
+		{
+			//$query->where("status = '".$db->escape($filter_status)."' or status is null");
+			 if( $filter_status == 'pending' )
+				 //$query->where(" (status = '".$db->escape($filter_status)."') OR (status = NULL)");
+				 $query->where("status IS NULL OR status = '".$db->escape($filter_status)."' ");
+			  else
+				  $query->where("status = '".$db->escape($filter_status)."'");
+		}
+		
 		//Filtering created
 
 		//Checking "_dateformat"
@@ -212,7 +255,6 @@ class Dw_opportunities_responsesModelDwOpportunitiesresponses extends JModelList
 			$query->where("a.created <= '".$db->escape($filter_created_to)."'");
 		}
 
-	
 		//Filtering opportunity_id
 		$filter_opportunity_id = $this->state->get("filter.opportunity_id");
 		if ($filter_opportunity_id) {

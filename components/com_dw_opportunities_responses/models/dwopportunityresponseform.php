@@ -205,7 +205,8 @@ class Dw_opportunities_responsesModelDwOpportunityresponseForm extends JModelFor
 	protected function loadFormData()
 	{
 		$data = JFactory::getApplication()->getUserState('com_dw_opportunities_responses.edit.opportunityresponse.data', array());
-        if (empty($data)) {
+        
+		if (empty($data)) {
             $data = $this->getData();
         }
         
