@@ -29,10 +29,10 @@ class Dw_opportunities_responsesViewDwOpportunitiesresponses extends JViewLegacy
         $this->state = $this->get('State');
         
 		$donorwizUser = new DonorwizUser( JFactory::getUser() -> id );
-		$isBeneficiaryVolunteers = $donorwizUser -> isBeneficiary('com_dw_opportunities');
+		$isBeneficiary = $donorwizUser -> isBeneficiary('com_donorwiz');
 		//Filter by user id
 		//Check if user is Beneficiary
-		if($isBeneficiaryVolunteers)
+		if($isBeneficiary)
 			$this->state->set('filter.opportunity_created_by', JFactory::getUser()->id );
 		else
 			$this->state->set('filter.created_by', JFactory::getUser()->id );

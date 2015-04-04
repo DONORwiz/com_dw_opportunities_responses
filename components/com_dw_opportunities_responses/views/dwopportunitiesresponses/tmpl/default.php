@@ -12,6 +12,8 @@ $canCreateOpportunity = $user->authorise('core.create', 'com_dw_opportunities');
 
 ?>
 
+<div class="uk-margin-left">
+
 <?php echo JLayoutHelper::render( 'items.filters' , array( 'items'=> $items ) , JPATH_ROOT .'/components/com_dw_opportunities_responses/layouts/' , null ); ?>	
 
 <?php if( $canCreateOpportunity):?>
@@ -34,3 +36,5 @@ $canCreateOpportunity = $user->authorise('core.create', 'com_dw_opportunities');
 	<?php echo JLayoutHelper::render( 'volunteers.responses' , array( 'items'=> $items ) , JPATH_ROOT .'/components/com_dw_opportunities/layouts/' , null ); ?>	
 
 <?php endif;?>
+
+</div>

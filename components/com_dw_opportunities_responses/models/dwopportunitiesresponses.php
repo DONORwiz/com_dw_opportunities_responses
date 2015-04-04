@@ -190,18 +190,19 @@ class Dw_opportunities_responsesModelDwOpportunitiesresponses extends JModelList
 		}
 
 		
-		// Join over the response statuses
-		$query->select('statuses.id AS status_id');
-		$query->select('statuses.status AS status');
-		$query->select('statuses.state AS status_state');
-		$query->select('statuses.created_by AS status_created_by');
-		$query->join('LEFT', '#__dw_opportunities_responses_statuses AS statuses ON statuses.response_id=a.id');
+		// Join over the response status
+		$query->select('status.id AS status_id');
+		$query->select('status.status AS status');
+		//$query->select('statuses.state AS status_state');
+		//$query->select('statuses.created_by AS status_created_by');
+		$query->join('LEFT', '#__dw_opportunities_responses_statuses AS status ON status.response_id=a.id');
 
-		$query->where('a.state IN ( 0 , 1 )');
+		$query->where('a.state = "1" ');
 
         // Filter by search in message,name etc
         $search = $this->getState('filter.search');
-        if (!empty($search))
+        
+		if (!empty($search))
         {
             if (stripos($search, 'id:') === 0)
             {
@@ -233,6 +234,7 @@ class Dw_opportunities_responsesModelDwOpportunitiesresponses extends JModelList
 		//Filtering status
 		
 		$filter_status = $this->state->get("filter.status");
+		
 		if ($filter_status) 
 		{
 			//$query->where("status = '".$db->escape($filter_status)."' or status is null");
@@ -298,7 +300,7 @@ class Dw_opportunities_responsesModelDwOpportunitiesresponses extends JModelList
 	{
 		$this -> setState ('filter.created_by' , $volunteer_id );
 		$this -> setState ('filter.opportunity_id' , $opportunity_id );
-		
+
 		return $this->getItems();
 	}
 	
