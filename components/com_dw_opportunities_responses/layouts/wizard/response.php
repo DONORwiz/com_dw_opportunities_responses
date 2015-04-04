@@ -22,6 +22,8 @@ $responseModel = JModelLegacy::getInstance('DwOpportunityresponse', 'Dw_opportun
 $responseData = $responseModel->getData($id);	
 $form->bind( $responseData );
 
+if( !$responseData -> state )
+	$responseData -> state = '1';
 
 JFactory::getApplication()->setUserState('com_dw_opportunities_responses.form.opportunityresponse.'.$responseData->id, $responseData );
 
@@ -34,10 +36,7 @@ $script[] = 'var JText_COM_DONORWIZ_WIZARD_SAVE_FAIL = "'.JText::_('COM_DONORWIZ
 $script[] = 'var JText_COM_DONORWIZ_WIZARD_TRASH_CONFIRM = "'.JText::_('COM_DONORWIZ_WIZARD_TRASH_CONFIRM').'";';
 $script[] = 'var JText_COM_DONORWIZ_MODAL_PLEASE_WAIT = "'.JText::_('COM_DONORWIZ_MODAL_PLEASE_WAIT').'";';
 
-JFactory::getDocument()->addScriptDeclaration(implode("\n", $script));
-
-JHtml::script(Juri::base() . 'media/com_donorwiz/js/wizard.js');
-	
+JFactory::getDocument()->addScriptDeclaration(implode("\n", $script));	
 
 ?>
 
@@ -46,13 +45,14 @@ JHtml::script(Juri::base() . 'media/com_donorwiz/js/wizard.js');
 <div class="uk-article">
 
 	
-	<form id="form-response" class="uk-form uk-form-horizontal dw-ajax-submit" action="<?php echo JURI::base();?>index.php?option=com_dw_opportunities_responses&task=dwopportunityresponseform.save" method="post" class="form-validate form-horizontal" enctype="multipart/form-data">
+	<form id="form-response" class="uk-form uk-form-horizontal dw-wizard" action="<?php echo JURI::base();?>index.php?option=com_dw_opportunities_responses&task=dwopportunityresponseform.save" method="post" class="form-validate form-horizontal" enctype="multipart/form-data">
 		
 		<div class="uk-hidden">
 		
 			<?php echo $form->getInput('id'); ?>
-			<?php echo $form->getInput('state'); ?>
+
 			<?php echo $form->getInput('created_by'); ?>
+			<input id="jform_state" type="hidden" name="jform[state]" value="<?php echo $responseData->state; ?>" />	
 			
 		</div>
 
@@ -73,13 +73,12 @@ JHtml::script(Juri::base() . 'media/com_donorwiz/js/wizard.js');
 		
 		<div class="uk-form-row" data-uk-margin>
 			<button type="submit" class="validate uk-button uk-button-primary uk-button-large"><?php echo JText::_('COM_DW_OPPORTUNITIES_RESPONSES_WIZARD_SUBMIT'); ?></button>
-
+			<?php echo JLayoutHelper::render( 'acl.button.trash.response', array ( 'response' => $response , 'class' => 'uk-float-right' ) , JPATH_ROOT .'/components/com_dw_opportunities_responses/layouts' , null ); ?>
 		</div>
 		
 		<input type="hidden" name="jform[opportunity_id]" value="<?php echo $opportunity_id; ?>" />
-		<input type="hidden" name="wizardReloadPage" value="current" />
 
-		
+
 		<?php echo JHtml::_('form.token'); ?>
 
 	</form>

@@ -44,6 +44,23 @@ class Dw_opportunities_responsesControllerDwOpportunityresponseForm extends Dw_o
 		{
             //Check the user can create new item
             $authorised = $user->authorise('core.create', 'com_dw_opportunities_responses');
+            
+            //Check the user has already created a response for this opportunity_id ( ONLY 1 allowed ) - yesinternet
+            if( $authorised )
+            {
+				$opportunity_id = ( !empty( $data['opportunity_id'] ) ) ? $data['opportunity_id'] : 0 ;
+				JModelLegacy::addIncludePath(JPATH_SITE . '/components/com_dw_opportunities_responses/models', 'Dw_opportunities_responsesModel');
+				$opportunitiesresponsesModel = JModelLegacy::getInstance('DwOpportunitiesresponses', 'Dw_opportunities_responsesModel', array('ignore_request' => true));        
+				$opportunityresponses = $opportunitiesresponsesModel -> getItemsByVolunteer( JFactory::getUser()->id , $opportunity_id );
+
+				if( $opportunityresponses )
+				{
+					$authorised = false ;
+				}
+			
+			}	
+            
+
         }		
 
 		if (!$authorised)

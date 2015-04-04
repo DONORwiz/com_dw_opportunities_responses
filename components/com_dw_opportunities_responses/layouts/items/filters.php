@@ -21,7 +21,7 @@ $donorwizUrl = new DonorwizUrl();
 
 
 ?>
-<div class="uk-width-1-1 uk-margin-large-bottom" data-uk-sticky="{top:76}" style="background:#fff;">
+<div class="uk-width-1-1 uk-margin-large-bottom" data-uk-sticky="{top:76}">
 
 	<div class="uk-width-1-1 uk-text-right uk-margin-small-top uk-form">
 		

@@ -225,9 +225,6 @@ class Dw_opportunities_responsesModelDwOpportunityresponseForm extends JModelFor
 		$id = (!empty($data['id'])) ? $data['id'] : (int)$this->getState('opportunityresponse.id');
         $state = (!empty($data['state'])) ? 1 : 0;
         $user = JFactory::getUser();
-		
-		//yesinternet
-		$opportunity_id = ( !empty( $data['opportunity_id'] ) ) ? $data['opportunity_id'] : 0 ;
 
         if($id) {
             //Check the user can edit this item
@@ -241,16 +238,6 @@ class Dw_opportunities_responsesModelDwOpportunityresponseForm extends JModelFor
             if($user->authorise('core.edit.state', 'com_dw_opportunities_responses') !== true && $state == 1){ //The user cannot edit the state of the item.
                 $data['state'] = 0;
             }
-			
-			//Check the user has already created a response for this opportunity_id - ONLY 1 allowed - yesinternet
-			JModelLegacy::addIncludePath(JPATH_SITE . '/components/com_dw_opportunities_responses/models', 'Dw_opportunities_responsesModel');
-			$opportunitiesresponsesModel = JModelLegacy::getInstance('DwOpportunitiesresponses', 'Dw_opportunities_responsesModel', array('ignore_request' => true));        
-			$opportunityresponses = $opportunitiesresponsesModel -> getItemsByVolunteer( JFactory::getUser()->id , $opportunity_id );
-
-			if( $opportunityresponses )
-			{
-				$authorised = false ;
-			}			
 		}
 
         if ($authorised !== true) {
