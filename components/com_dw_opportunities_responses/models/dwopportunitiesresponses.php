@@ -290,7 +290,13 @@ class Dw_opportunities_responsesModelDwOpportunitiesresponses extends JModelList
 			$registry = new JRegistry;
 			$registry->loadString($item->parameters);
 			$item->parameters = $registry->toArray();
-
+			
+			if ( !$item -> status )
+				$item -> status = 'pending';
+			
+			$item -> created_name = JFactory::getUser( $item -> created_by ) -> name;
+			$item -> created_email = JFactory::getUser( $item -> created_by ) -> email;
+			$item -> created_telephone = ( isset ( $item->parameters ['telephone'] ) ) ? $item->parameters ['telephone'] : '' ;
 		}
         
 		return $items;
