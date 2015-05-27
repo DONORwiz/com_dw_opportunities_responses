@@ -62,7 +62,9 @@ class Dw_opportunities_responsesControllerDwOpportunityresponseForm extends Dw_o
 			}	
             
 
-        }		
+        }
+		
+		//TO DO: Check if date_Start has expired and if reposnes disabled by the opportunity creator
 
 		if (!$authorised)
 		{		

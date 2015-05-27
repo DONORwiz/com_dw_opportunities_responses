@@ -14,70 +14,46 @@ class Dw_opportunities_responsesViewDwOpportunitiesresponses extends JViewLegacy
     protected $pagination;
     protected $state;
     protected $params;
-    protected $jinputFilter;
 
     /**
      * Display the view
      */
     public function display($tpl = null) {
         
-		$app = JFactory::getApplication();
+		$user = JFactory::getUser();
 		
-		$this->jinputFilter = $app->input->get('filter','','array');
+		$this->state = $this->get('State');
 		
-		
-        $this->state = $this->get('State');
-        
+		//Filter by user
 		$donorwizUser = new DonorwizUser( JFactory::getUser() -> id );
 		$isBeneficiary = $donorwizUser -> isBeneficiary('com_donorwiz');
-		//Filter by user id
+		$canCreateResponse = $user->authorise('core.create', 'com_dw_opportunities_responses');
+
 		//Check if user is Beneficiary
-		if($isBeneficiary)
-			$this->state->set('filter.opportunity_created_by', JFactory::getUser()->id );
-		else
-			$this->state->set('filter.created_by', JFactory::getUser()->id );
-		
-		//Default ordering
-		if( $app->input->get('filter_order','','string')=='' )
+		if( !$user->get('isRoot') )
 		{
-			$this->state->set('list.ordering','a.modified');
-		}
-		
-		//Default ordering
-		if( $app->input->get('filter_order_Dir','','string')=='' )
-		{
-			$this->state->set('list.direction','desc');
+			if( $isBeneficiary )
+			{
+				$this->state->set('filter.opportunity_created_by', $user->id );
+			}
+			else if( $canCreateResponse )
+			{
+				$this->state->set('filter.created_by', $user->id );
+			}
 		}
 
-		//Default status
-		$jinputFilter = $this->jinputFilter;
-		if(!isset($jinputFilter['status']))
-		{
-			$this->state->set('filter.status','');
-		}
-
-		//Default search
-		$jinputFilter = $this->jinputFilter;
-		if(!isset($jinputFilter['search']))
-		{
-			$this->state->set('filter.search','');
-		}	
-
-		
 		$this->items = $this->get('Items');
         $this->pagination = $this->get('Pagination');
-        $this->params = $app->getParams('com_dw_opportunities_responses');
+		$this->filterForm = $this->get('FilterForm');
+		$this->activeFilters = $this->get('ActiveFilters');
        
-	   //var_dump($this);
-	   // $this->filterForm = $this->get('FilterForm');
-		//$this->activeFilters = $this->get('ActiveFilters');
-
-        // // Check for errors.
-        if (count($errors = $this->get('Errors'))) {
-
+		// Check for errors.
+        if (count($errors = $this->get('Errors')))
+		{
             throw new Exception(implode("\n", $errors));
         }
 
+		// $this->params =  JFactory::getApplication()->getParams('com_dw_opportunities_responses');
         //$this->_prepareDocument();
         parent::display($tpl);
     }
@@ -86,7 +62,8 @@ class Dw_opportunities_responsesViewDwOpportunitiesresponses extends JViewLegacy
      * Prepares the document
      */
     protected function _prepareDocument() {
-        $app = JFactory::getApplication();
+        
+		$app = JFactory::getApplication();
         $menus = $app->getMenu();
         $title = null;
 

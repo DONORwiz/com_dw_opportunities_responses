@@ -1,6 +1,8 @@
 <?php
 
 defined('_JEXEC') or die;
+$jinput = JFactory::getApplication()->input;
+$filterArray = $jinput->get('filter', array(), 'array');
 
 $user = JFactory::getUser();
 
@@ -100,6 +102,8 @@ $cuser = CFactory::getUser( $response -> created_by );
 				<?php if( $user -> id != $response -> created_by):?>
 				<?php echo JText::sprintf('COM_DW_OPPORTUNITIES_RESPONSES_ITEM_THE_VOLUNTEER_IS_INTERESTED_IN',$cuser->getDisplayName());?>
 				<?php endif;?>
+
+				<?php //if ( ( isset ( $filterArray['opportunity_id']) && $filterArray['opportunity_id'] =='' ) || !$filterArray['opportunity_id'] ):?>
 				<h3 class="uk-text-primary uk-margin-small">
 					
 					<?php echo  $opportunity->title;?> 
@@ -113,11 +117,11 @@ $cuser = CFactory::getUser( $response -> created_by );
 					</span>
 
 				</h3>
-				
+				<?php endif;?>
 
 				
 				</div>
-				<?php endif;?>
+				<?php //endif;?>
 				
 				<blockquote class="uk-margin-small">
 					
