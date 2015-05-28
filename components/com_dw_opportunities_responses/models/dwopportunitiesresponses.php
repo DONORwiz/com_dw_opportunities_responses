@@ -37,6 +37,7 @@ class Dw_opportunities_responsesModelDwOpportunitiesresponses extends JModelList
                 'opportunity_id', 'a.opportunity_id',
                 'message', 'a.message',
                 'parameters', 'a.parameters',
+                'modified', 'a.modified',
 
             );
         }
@@ -50,98 +51,125 @@ class Dw_opportunities_responsesModelDwOpportunitiesresponses extends JModelList
      *
      * @since    1.6
      */
-    protected function populateState($ordering = null, $direction = null)
-    {
+	protected function populateState($ordering = null, $direction = null)
+	{
 
+		// Initialise variables.
+		$app = JFactory::getApplication();
 
-        // Initialise variables.
-        $app = JFactory::getApplication();
+		// List state information
+		$limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'));
+		$this->setState('list.limit', $limit);
 
-        // List state information
-        $limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'));
-        $this->setState('list.limit', $limit);
+		$limitstart = $app->input->getInt('limitstart', 0);
+		$this->setState('list.start', $limitstart);
 
-        $limitstart = $app->input->getInt('limitstart', 0);
-        $this->setState('list.start', $limitstart);
-		
-        if ($list = $app->getUserStateFromRequest($this->context . '.list', 'list', array(), 'array'))
-        {
-            foreach ($list as $name => $value)
-            {
-                // Extra validations
-                switch ($name)
-                {
-                    case 'fullordering':
-                        $orderingParts = explode(' ', $value);
+		if ($list = $app->getUserStateFromRequest($this->context . '.list', 'list', array(), 'array'))
+		{   
+			foreach ($list as $name => $value)
+			{
+				// Extra validations
+				switch ($name)
+				{
+					case 'fullordering':
+						$orderingParts = explode(' ', $value);
 
-                        if (count($orderingParts) >= 2)
-                        {
-                            // Latest part will be considered the direction
-                            $fullDirection = end($orderingParts);
+						if (count($orderingParts) >= 2)
+						{
+							// Latest part will be considered the direction
+							$fullDirection = end($orderingParts);
 
-                            if (in_array(strtoupper($fullDirection), array('ASC', 'DESC', '')))
-                            {
-                                $this->setState('list.direction', $fullDirection);
-                            }
+							if (in_array(strtoupper($fullDirection), array('ASC', 'DESC', '')))
+							{
+								$this->setState('list.direction', $fullDirection);
+							}
 
-                            unset($orderingParts[count($orderingParts) - 1]);
+							unset($orderingParts[count($orderingParts) - 1]);
 
-                            // The rest will be the ordering
-                            $fullOrdering = implode(' ', $orderingParts);
+							// The rest will be the ordering
+							$fullOrdering = implode(' ', $orderingParts);
 
-                            if (in_array($fullOrdering, $this->filter_fields))
-                            {
-                                $this->setState('list.ordering', $fullOrdering);
-                            }
-                        }
-                        else
-                        {
-                            $this->setState('list.ordering', $ordering);
-                            $this->setState('list.direction', $direction);
-                        }
-                        break;
+							if (in_array($fullOrdering, $this->filter_fields))
+							{
+								$this->setState('list.ordering', $fullOrdering);
+							}
+						}
+						else
+						{
+							$this->setState('list.ordering', $ordering);
+							$this->setState('list.direction', $direction);
+						}
+						break;
 
-                    case 'ordering':
-                        if (!in_array($value, $this->filter_fields))
-                        {
-                            $value = $ordering;
-                        }
-                        break;
+					case 'ordering':
+						if (!in_array($value, $this->filter_fields))
+						{
+							$value = $ordering;
+						}
+						break;
 
-                    case 'direction':
-                        if (!in_array(strtoupper($value), array('ASC', 'DESC', '')))
-                        {
-                            $value = $direction;
-                        }
-                        break;
+					case 'direction':
+						if (!in_array(strtoupper($value), array('ASC', 'DESC', '')))
+						{
+							$value = $direction;
+						}
+						break;
 
-                    case 'limit':
-                        $limit = $value;
-                        break;
+					case 'limit':
+						$limit = $value;
+						break;
 
-                    // Just to keep the default case
-                    default:
-                        $value = $value;
-                        break;
-                }
+					// Just to keep the default case
+					default:
+						$value = $value;
+						break;
+				}
 
-                $this->setState('list.' . $name, $value);
-            }
-        }
-		
-        // Receive & set filters
-		
+				$this->setState('list.' . $name, $value);
+			}
+		}
+
+		// Receive & set filters
 		if ($filters = $app->getUserStateFromRequest($this->context . '.filter', 'filter', array(), 'array'))
-        {
-            foreach ($app->getUserStateFromRequest($this->context . '.filter', 'filter', array(), 'array') as $name => $value)
-            {
-                $this->setState('filter.' . $name, $value);
-            }
-        }
+		{
+			foreach ($filters as $name => $value)
+			{
+				$this->setState('filter.' . $name, $value);
+			}
+		}
+
+		$ordering = $app->input->get('filter_order');
+		if (!empty($ordering))
+		{
+			$list             = $app->getUserState($this->context . '.list');
+			$list['ordering'] = $app->input->get('filter_order');
+			$app->setUserState($this->context . '.list', $list);
+		}
+
+		$orderingDirection = $app->input->get('filter_order_Dir'); 
+		if (!empty($orderingDirection))
+		{
+			$list              = $app->getUserState($this->context . '.list');
+			$list['direction'] = $app->input->get('filter_order_Dir');
+			$app->setUserState($this->context . '.list', $list);
+		}
 		
-        $this->setState('list.ordering', $app->input->get('filter_order'));
-        $this->setState('list.direction', $app->input->get('filter_order_Dir'));
-    }
+		//TO DO : Check why this code is useful. When uncommented, my fullordering list filter is reset, becasue the state is reset, so not working well.
+		//$list = $app->getUserState($this->context . '.list'); var_dump($list);
+
+		//if (empty($list['ordering']))
+		//{
+			//$list['ordering'] = 'ordering';
+		//}
+
+		//if (empty($list['direction']))
+		//{
+			//$list['direction'] = 'asc';
+		//}
+
+		//$this->setState('list.ordering', $list['ordering']);
+		//$this->setState('list.direction', $list['direction']);
+	}
 
     /**
      * Build an SQL query to load the list data.
@@ -156,39 +184,30 @@ class Dw_opportunities_responsesModelDwOpportunitiesresponses extends JModelList
         $query = $db->getQuery(true);
 
         // Select the required fields from the table.
-        $query
-                ->select(
-                        $this->getState(
-                                'list.select', 'DISTINCT a.*'
-                        )
+        $query -> select(
+			$this->getState(
+				'list.select', 'DISTINCT a.*'
+                )
         );
-
-		
-		
+	
         $query->from('`#__dw_opportunities_responses` AS a');
 
-        
-		// Join over the users for the checked out user.
+		//Component creator
+		//Join over the users for the checked out user.
 		//$query->select('uc.name AS editor');
 		//$query->join('LEFT', '#__users AS uc ON uc.id=a.checked_out');
     
 		// Join over the created by field 'created_by'
+		$query->select('created_by.name AS created_by_name');
+		$query->select('created_by.email AS created_by_email');
+
 		$query->join('LEFT', '#__users AS created_by ON created_by.id = a.created_by');
 
-
-		//Filtering opportunity_created_by
-		$filter_opportunity_created_by = $this->state->get("filter.opportunity_created_by");
-		
-		if ($filter_opportunity_created_by) {
-			
-			$query->select('opportunities.created_by AS opportunity_created_by');
-			$query->select('opportunities.title AS opportunity_title');
-			$query->select('opportunities.created AS opportunity_created');
-			$query->join('INNER', '#__dw_opportunities AS opportunities ON opportunities.id = a.opportunity_id');
-			
-			$query->where('opportunities.created_by ="'.$filter_opportunity_created_by.'"');
-		}
-
+		// Join over the opportunity_id
+		$query->select('opportunities.created_by AS opportunity_created_by');
+		$query->select('opportunities.title AS opportunity_title');
+		$query->select('opportunities.created AS opportunity_created');
+		$query->join('LEFT', '#__dw_opportunities AS opportunities ON opportunities.id = a.opportunity_id');
 		
 		// Join over the response status
 		$query->select('status.id AS status_id');
@@ -216,6 +235,9 @@ class Dw_opportunities_responsesModelDwOpportunitiesresponses extends JModelList
 				$_where = array();
 				$_where[] = 'a.message LIKE ' . $search;
 				
+				
+				
+				
 				//$_where[] = 'status LIKE ' . $search;
 				
 				//if ($filter_opportunity_created_by) {
@@ -228,11 +250,8 @@ class Dw_opportunities_responsesModelDwOpportunitiesresponses extends JModelList
             }
         }
 		
-		
-
-        
+      
 		//Filtering status
-		
 		$filter_status = $this->state->get("filter.status");
 		
 		if ($filter_status) 
@@ -240,13 +259,11 @@ class Dw_opportunities_responsesModelDwOpportunitiesresponses extends JModelList
 			//$query->where("status = '".$db->escape($filter_status)."' or status is null");
 			 if( $filter_status == 'pending' )
 				 //$query->where(" (status = '".$db->escape($filter_status)."') OR (status = NULL)");
-				 $query->where("status IS NULL OR status = '".$db->escape($filter_status)."' ");
+				 $query->where("(status IS NULL OR status='".$db->escape($filter_status)."')");
 			  else
 				  $query->where("status = '".$db->escape($filter_status)."'");
 		}
 		
-		//Filtering created
-
 		//Checking "_dateformat"
 		$filter_created_from = $this->state->get("filter.created_from_dateformat");
 		if ($filter_created_from && preg_match("/^(19|20)\d\d[-](0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])$/", $filter_created_from) && date_create($filter_created_from) ) {
@@ -263,19 +280,27 @@ class Dw_opportunities_responsesModelDwOpportunitiesresponses extends JModelList
 			$query->where("a.opportunity_id = '".$db->escape($filter_opportunity_id)."'");
 		}
 		
+		//Filtering opportunity_created_by
+		$filter_opportunity_created_by = $this->state->get("filter.opportunity_created_by");
+		if ($filter_opportunity_created_by) {		
+			$query->where('opportunities.created_by ="'.$filter_opportunity_created_by.'"');
+		}
+		
 		//Filtering created_by
 		$filter_created_by = $this->state->get("filter.created_by");
 		if ($filter_created_by) {
 			$query->where("a.created_by = '".$db->escape($filter_created_by)."'");
 		}
 
-        // Add the list ordering clause.
-        $orderCol = $this->state->get('list.ordering');
-        $orderDirn = $this->state->get('list.direction');
-        if ($orderCol && $orderDirn)
-        {
-            $query->order($db->escape($orderCol . ' ' . $orderDirn));
-        }
+		// Add the list ordering clause.
+		$orderCol  = $this->state->get('list.ordering');
+		$orderDirn = $this->state->get('list.direction');
+		
+		if ($orderCol && $orderDirn)
+		{
+			$query->order($db->escape($orderCol . ' ' . $orderDirn));
+		}
+
 
         return $query;
     }
@@ -294,8 +319,6 @@ class Dw_opportunities_responsesModelDwOpportunitiesresponses extends JModelList
 			if ( !$item -> status )
 				$item -> status = 'pending';
 			
-			$item -> created_name = JFactory::getUser( $item -> created_by ) -> name;
-			$item -> created_email = JFactory::getUser( $item -> created_by ) -> email;
 			$item -> created_telephone = ( isset ( $item->parameters ['telephone'] ) ) ? $item->parameters ['telephone'] : '' ;
 		}
         
@@ -309,50 +332,99 @@ class Dw_opportunities_responsesModelDwOpportunitiesresponses extends JModelList
 
 		return $this->getItems();
 	}
-	
-    public function getItemsByOpportunity( $opportunity_id  )
-    {
 
-		$user = JFactory::getUser();
-								
-		$this -> setState('filter.opportunity_id','-1');
+    public function getItemsByUser( $user , $opportunity_id = null )
+    {
+	
+		if( !$user ){
+			return null;
+		}
+		
+		if( $user -> guest ){
+			return null;
+		}
+		
+		$canCreateResponse = $user->authorise('core.create', 'com_dw_opportunities_responses');
+		
+		if(!$canCreateResponse){
+			return null;
+		}
+		
+		
 		$this -> setState('list.ordering', 'created');
         $this -> setState('list.direction', 'desc');
 		
-		//Check if user can create Response item----------------------------------------
-		$canCreateResponse = $user->authorise('core.create', 'com_dw_opportunities_responses');
-		
-		if($canCreateResponse){
-			$this ->setState('filter.created_by',$user->id);
-			
-		}
-		
-		$this ->setState('filter.opportunity_id',$opportunity_id);
+		$this -> setState ('filter.created_by' , $user -> id );
 				
-		//Check if user can edit the Opportunity item----------------------------------------
-		// $canEditOpportunity = $user->authorise('core.edit', 'com_volunteers');
-
-		// if (!$canEditOpportunity && $user->authorise('core.edit.own', 'com_volunteers'))
-			// $canEditOpportunity = $user->id == $opportunity_created_by_id ;
-	
-		// if($canEditOpportunity ){
-			// $this ->setState('filter.opportunity_id',$opportunity_id);
-		// }
+		if( $opportunity_id ){
+			$this ->setState('filter.opportunity_id', $opportunity_id);
+		}
 		
 		$responses = $this->getItems();
 		
+		return $responses;
+	}
+	
+    public function getItemsByOpportunity( $opportunity = null )
+    {
+		$user = JFactory::getUser();
+		
+		if( $user -> guest){
+			return null;
+		}
+
+		if( ! $opportunity -> id ){
+			return null;
+		}
+		
+		$donorwizUser = new DonorwizUser( $user -> id );
+		$isBeneficiary = $donorwizUser -> isBeneficiary('com_donorwiz');
+
+		//$this -> setState('filter.opportunity_id','-1');
+		$this -> setState('list.ordering', 'created');
+        $this -> setState('list.direction', 'desc');
+		$this -> setState('filter.opportunity_id', $opportunity -> id );
+		
+		//Check if user can create Response item, return only his responses-------------------
+		$canCreateResponse = $user->authorise('core.create', 'com_dw_opportunities_responses');
+		if( $canCreateResponse ){
+			$this ->setState('filter.created_by', $user -> id );
+		}
+		
+		//Check if user can edit opportunity --------------------------------------------------
+		$canEditOpportunity = $user->authorise('core.edit', 'com_dw_opportunities');
+		if (!$canEditOpportunity && $user->authorise('core.edit.own', 'com_dw_opportunities')) {
+			$canEditOpportunity = $user->id == $opportunity->created_by;
+		}
+		
+		if( !$canEditOpportunity ){
+			return null;
+		}
+		
+		$responses = $this->getItems();
+
+		$statistics = $this -> getItemsStatistics( $responses );
+		
+		//if( $user -> guest || !$isBeneficiary || !$opportunity->canEdit)
+			//$responses = null;
+			
+		
+		return array( 'items'=> $responses , 'statistics' => $statistics );
+		
+    }
+
+	
+	public function getItemsStatistics( $items ){
+		
 		$statistics = array();
 		
-		$statistics['total'] = 0;
 		$statistics['pending'] = 0;
 		$statistics['accepted'] = 0;
 		$statistics['declined'] = 0;
 		
-		foreach ($responses as $key => $response)
+		foreach ( $items as $key => $response )
 		{
-			$statistics['total'] ++;
-			
-			if($response->status=='pending'||!$response->status)
+			if( $response -> status == 'pending' || !$response -> status )
 				$statistics['pending']++;
 			
 			if($response->status=='accepted')
@@ -360,13 +432,13 @@ class Dw_opportunities_responsesModelDwOpportunitiesresponses extends JModelList
 
 			if($response->status=='declined')
 				$statistics['declined']++;
-
-			
 		}
 		
-		return array( 'items'=> $responses , 'statistics' => $statistics );
+		$statistics['total'] = count($items);		
 		
-    }
+		return $statistics;
+	
+	}
 	
 	public function getCount( $opportunity_id = null )
     {

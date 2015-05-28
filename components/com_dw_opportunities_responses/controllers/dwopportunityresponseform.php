@@ -24,6 +24,7 @@ class Dw_opportunities_responsesControllerDwOpportunityresponseForm extends Dw_o
 
 		// Check if user can edit or create the item ---------------------------------------------------------------------------------------------
 		$id = ( ( $data['id'] == 0 ) || !isset ( $data['id'] ) ) ? null : (int)$data['id'];
+		$isnew = ( $id ) ? false  : true ;
         $user = JFactory::getUser();
 
         if( $id ) 
@@ -61,7 +62,9 @@ class Dw_opportunities_responsesControllerDwOpportunityresponseForm extends Dw_o
 			}	
             
 
-        }		
+        }
+		
+		//TO DO: Check if date_Start has expired and if reposnes disabled by the opportunity creator
 
 		if (!$authorised)
 		{		
@@ -167,7 +170,7 @@ class Dw_opportunities_responsesControllerDwOpportunityresponseForm extends Dw_o
 		//Notify Beneficiary about the new response  ----------------------------------------------------------------------------------------------------
 		JPluginHelper::importPlugin('donorwiz');
 		$dispatcher	= JEventDispatcher::getInstance();
-		$dispatcher->trigger( 'onOpportunityResponseUpdate' , array( &$data ) );
+		$dispatcher->trigger( 'onOpportunityResponseUpdate' , array( &$data , $isnew ) );
 
 		try
 		{
