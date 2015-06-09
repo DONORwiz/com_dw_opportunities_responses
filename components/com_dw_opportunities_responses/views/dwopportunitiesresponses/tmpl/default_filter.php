@@ -45,7 +45,7 @@ if (isset($filterForm))
 	//Check if the user can create the resposne
 	$canCreateResponse = $user->authorise('core.create', 'com_dw_opportunities_responses');
 	if ($canCreateResponse){
-		$opportunity_id_query = 'SELECT "" AS id, "'.JText::_('COM_DW_OPPORTUNITIES_RESPONSES_FILTER_BY_OPPORTUNITY_SELECT').'" AS title UNION ALL SELECT a.id , a.title FROM #__dw_opportunities as A LEFT JOIN #__dw_opportunities_responses AS b ON a.id=b.opportunity_id WHERE a.state IN (0,1) AND b.state=1 AND b.created_by="'.$user->id.'"';
+		$opportunity_id_query = 'SELECT "" AS id, "'.JText::_('COM_DW_OPPORTUNITIES_RESPONSES_FILTER_BY_OPPORTUNITY_SELECT').'" AS title UNION ALL SELECT a.id , a.title FROM #__dw_opportunities as a LEFT JOIN #__dw_opportunities_responses AS b ON a.id=b.opportunity_id WHERE a.state IN (0,1) AND b.state=1 AND b.created_by="'.$user->id.'"';
 	}
 	
 	if ( $user->get('isRoot') ){

@@ -36,7 +36,7 @@ class JFormFieldTimecreated extends JFormField
 
         $time_created = $this->value;
         if (!strtotime($time_created)) {
-            $time_created = JFactory::getDate()->toSql();
+            $time_created = JFactory::getDate( 'now', JFactory::getConfig()->get("offset") )->toSql(true);
             $html[] = '<input type="hidden" name="' . $this->name . '" value="' . $time_created . '" />';
         }
         $hidden = (boolean) $this->element['hidden'];

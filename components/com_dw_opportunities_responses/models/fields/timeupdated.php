@@ -47,7 +47,7 @@ class JFormFieldTimeupdated extends JFormField
                 $html[] = "<div>".$pretty_date."</div>";
             }
         }
-        $time_updated = JFactory::getDate()->toSql();
+        $time_updated = JFactory::getDate( 'now', JFactory::getConfig()->get("offset") )->toSql(true);
         $html[] = '<input type="hidden" name="'.$this->name.'" value="'.$time_updated.'" />';
         
 		return implode($html);

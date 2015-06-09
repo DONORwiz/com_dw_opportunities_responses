@@ -201,7 +201,7 @@ class Dw_opportunities_responsesModelDwOpportunitiesresponses extends JModelList
 		$query->select('created_by.name AS created_by_name');
 		$query->select('created_by.email AS created_by_email');
 
-		$query->join('LEFT', '#__users AS created_by ON created_by.id = a.created_by');
+		$query->join('INNER', '#__users AS created_by ON created_by.id = a.created_by');
 
 		// Join over the opportunity_id
 		$query->select('opportunities.created_by AS opportunity_created_by');
